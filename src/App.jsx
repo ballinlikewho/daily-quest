@@ -358,13 +358,15 @@ export default function DailyQuest() {
     const { finalRoll, roll2:r2, baseRoll } = applyMomentum(raw, flatBonus, hasDisadvantage, hasAdvantage);
     setRawRoll(baseRoll); setCurrentRoll(finalRoll); setRoll2(r2); setRolling(true);
     const isNat20 = baseRoll === 20, isNat1 = baseRoll === 1;
-    const base = getRollResult(finalRoll, DIFFICULTY[pendingAction.difficulty].dc);
+    const isFinalTurn = turn === MAX_TURNS - 1;
+    const effectiveDC = isFinalTurn ? calcFinalDC(turnHistory) : DIFFICULTY[pendingAction.difficulty].dc;
+    const base = getRollResult(finalRoll, effectiveDC);
     const trueResult = isNat20 ? { label:"CRITICAL SUCCESS", color:"#d4af37", emoji:"⭐" }
       : isNat1 ? { label:"CRITICAL FAILURE", color:"#c84040", emoji:"💀" } : base;
     setTimeout(() => {
       setRolling(false); setRollResult(trueResult);
       const isSuccess = trueResult.label==="SUCCESS"||trueResult.label==="CRITICAL SUCCESS";
-      setNextMomentum(calcNextMomentum(pendingAction.difficulty, isSuccess, isNat20, baseRoll, flatBonus, hasDisadvantage));
+      if (!isFinalTurn) setNextMomentum(calcNextMomentum(pendingAction.difficulty, isSuccess, isNat20, baseRoll, flatBonus, hasDisadvantage));
     }, 900);
   }
 
@@ -418,10 +420,11 @@ export default function DailyQuest() {
     const next = calcNextMomentum(pendingAction.difficulty, isSuccess, isNat20, rawRoll, flatBonus, hasDisadvantage);
     setFlatBonus(next.flatBonus); setHasDisadvantage(next.hasDisadvantage); setHasAdvantage(next.hasAdvantage||false);
 
-    const newHistory = [...turnHistory, { roll:currentRoll, rawRoll, result:rollResult, dc:DIFFICULTY[pendingAction.difficulty].dc, difficulty:pendingAction.difficulty }];
+    const actionDC = isFinal ? calcFinalDC(turnHistory) : DIFFICULTY[pendingAction.difficulty].dc;
+    const newHistory = [...turnHistory, { roll:currentRoll, rawRoll, result:rollResult, dc:actionDC, difficulty:pendingAction.difficulty }];
     setTurnHistory(newHistory);
     setNarrative(n => [...n,
-      { isAction:true, text:pendingAction.text, result:rollResult, roll:currentRoll, rawRoll, difficulty:pendingAction.difficulty, dc:DIFFICULTY[pendingAction.difficulty].dc },
+      { isAction:true, text:pendingAction.text, result:rollResult, roll:currentRoll, rawRoll, difficulty:isFinal ? null : pendingAction.difficulty, dc:actionDC, isFinalTurn:isFinal },
       { text:narrativeText, isOutcome:isFinal }
     ]);
 
@@ -575,7 +578,7 @@ export default function DailyQuest() {
   const finalDCColor = currentFinalDC >= 17 ? "#c84040" : currentFinalDC >= 13 ? "#c87040" : currentFinalDC >= 8 ? "#c8a86b" : "#6aaa60";
 
   return (
-    <div style={{ minHeight:"100vh", background:"#1a1208", display:"flex", flexDirection:"column", fontFamily:"'Palatino Linotype',Palatino,'Book Antiqua',serif", backgroundImage:parchmentNoise }}>
+    <div style={{ height:"100vh", background:"#1a1208", display:"flex", flexDirection:"column", fontFamily:"'Palatino Linotype',Palatino,'Book Antiqua',serif", backgroundImage:parchmentNoise, overflow:"hidden" }}>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
       {showHelp && <HelpModal />}
 
@@ -583,7 +586,7 @@ export default function DailyQuest() {
       <div style={{ padding:"0.85rem 1.5rem", borderBottom:"1px solid #2e1e08", display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(10,8,4,0.7)" }}>
         <div>
           <div style={{ fontFamily:"'Cinzel',serif", color:"#e8c87a", fontSize:"0.9rem", letterSpacing:"0.1em" }}>{tree?.title||"Daily Quest"}</div>
-          <div style={{ fontSize:"0.78rem", color:"#5a4020", letterSpacing:"0.2em", textTransform:"uppercase" }}>Day {dayNum} · {seed}</div>
+          <div style={{ fontSize:"0.78rem", color:"#8a6a3a", letterSpacing:"0.2em", textTransform:"uppercase" }}>Day {dayNum} · {seed}</div>
         </div>
         <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"0.35rem" }}>
           {(hasDisadvantage||hasAdvantage||flatBonus!==0) && (
@@ -591,9 +594,9 @@ export default function DailyQuest() {
               {hasDisadvantage?"⬇ Disadvantage":hasAdvantage?"⬆ Advantage":flatBonus>0?`+${flatBonus} Momentum`:`${flatBonus} Momentum`}
             </div>
           )}
-          <div style={{ fontSize:"0.8rem", fontFamily:"'Cinzel',serif", letterSpacing:"0.1em", color:"#5a4020" }}>
+          <div style={{ fontSize:"0.8rem", fontFamily:"'Cinzel',serif", letterSpacing:"0.1em", color:"#a07840" }}>
             Final DC <span style={{ color:finalDCColor, fontWeight:700 }}>{currentFinalDC}</span>
-            <span style={{ color:"#3a2810", marginLeft:4 }}>({currentFinalDC>=17?"brutal":currentFinalDC>=13?"hard":currentFinalDC>=8?"fair":"easy"})</span>
+            <span style={{ color:"#8a6a3a", marginLeft:4 }}>({currentFinalDC>=17?"brutal":currentFinalDC>=13?"hard":currentFinalDC>=8?"fair":"easy"})</span>
           </div>
           <div style={{ display:"flex", gap:"0.5rem", alignItems:"center" }}>
             <div style={{ display:"flex", gap:"0.35rem", alignItems:"center" }}>
@@ -604,7 +607,7 @@ export default function DailyQuest() {
                 return <div key={i} style={{ width:9,height:9,borderRadius:"50%", background:th?th.result.color:"#2a1e08", border:`1px solid ${th?th.result.color:"#3a2a0e"}`, transition:"all 0.4s", boxShadow:i===turn-1?`0 0 6px ${th?th.result.color+"88":"rgba(200,168,107,0.6)"}`:""}} />;
               })}
             </div>
-            <button onClick={()=>setShowHelp(true)} style={{ background:"none", border:"1px solid #3a2810", borderRadius:"50%", width:32, height:32, color:"#5a4020", cursor:"pointer", fontSize:"0.82rem", fontFamily:"'Cinzel',serif", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
+            <button onClick={()=>setShowHelp(true)} style={{ background:"none", border:"1px solid #6a4a20", borderRadius:"50%", width:32, height:32, color:"#a07840", cursor:"pointer", fontSize:"0.82rem", fontFamily:"'Cinzel',serif", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
           </div>
         </div>
       </div>
@@ -620,7 +623,7 @@ export default function DailyQuest() {
               <div key={i} style={{ textAlign:"right", marginBottom:"1.2rem", display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"0.35rem" }}>
                 <span style={{ display:"inline-block", background:"rgba(30,20,8,0.8)", border:"1px solid #3a2810", borderRadius:"2px 2px 0 2px", padding:"0.5rem 0.9rem", fontSize:"0.88rem", color:"#9a7840", fontFamily:"'IM Fell English',serif", fontStyle:"italic", maxWidth:"75%", textAlign:"left" }}>"{n.text}"</span>
                 <div style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", background:`${color}11`, border:`1px solid ${color}44`, borderRadius:2, padding:"0.25rem 0.7rem", fontSize:"0.75rem", color, fontFamily:"'Cinzel',serif", letterSpacing:"0.1em" }}>
-                  🎲 {n.roll}{modNote} · {n.difficulty} · {n.result.label}
+                  🎲 {n.roll}{modNote} · {n.isFinalTurn ? `⚔ Final Roll · DC ${n.dc}` : n.difficulty} · {n.result.label}
                 </div>
               </div>
             );
@@ -675,14 +678,15 @@ export default function DailyQuest() {
       <div style={{ borderTop:"1px solid #2e1e08", background:"rgba(10,8,4,0.7)", padding:"1rem 1.5rem", maxWidth:660, margin:"0 auto", width:"100%", boxSizing:"border-box" }}>
         {currentChoices.length>0 && phase==="choosing" && (
           <div style={{ display:"flex", flexDirection:"column", gap:"0.4rem" }}>
+            {isFinalRoll && <div style={{ fontFamily:"'Cinzel',serif", fontSize:"0.82rem", color:"#c8a86b", letterSpacing:"0.15em", textTransform:"uppercase", textAlign:"center", marginBottom:"0.25rem", opacity:0.7 }}>⚔ Choose your final gambit</div>}
             {currentChoices.map(c => (
               <button key={c.label} onClick={()=>selectAction(c)}
-                style={{ padding:"0.75rem 1rem", minHeight:52, background:"transparent", border:"1px solid #3a2810", borderRadius:2, color:"#9a7840", fontSize:"0.9rem", textAlign:"left", cursor:"pointer", fontFamily:"'IM Fell English',serif", display:"flex", gap:"0.75rem", alignItems:"center", transition:"all 0.15s" }}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor=DIFFICULTY[c.difficulty].color+"88";e.currentTarget.style.background=`${DIFFICULTY[c.difficulty].color}11`;}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor="#3a2810";e.currentTarget.style.background="transparent";}}>
+                style={{ padding:"0.75rem 1rem", minHeight:52, background:"transparent", border:`1px solid ${isFinalRoll?"#6a4a20":"#3a2810"}`, borderRadius:2, color:"#9a7840", fontSize:"0.9rem", textAlign:"left", cursor:"pointer", fontFamily:"'IM Fell English',serif", display:"flex", gap:"0.75rem", alignItems:"center", transition:"all 0.15s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=isFinalRoll?"#c8a86b88":DIFFICULTY[c.difficulty].color+"88";e.currentTarget.style.background=isFinalRoll?"rgba(200,168,107,0.08)":`${DIFFICULTY[c.difficulty].color}11`;}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=isFinalRoll?"#6a4a20":"#3a2810";e.currentTarget.style.background="transparent";}}>
                 <span style={{ fontFamily:"'Cinzel',serif", fontSize:"0.8rem", color:"#c8a86b", border:"1px solid #5a3a10", borderRadius:2, padding:"0.15rem 0.4rem", flexShrink:0, letterSpacing:"0.1em" }}>{c.label}</span>
                 <span style={{ flex:1 }}>{c.text}</span>
-                <span style={{ fontSize:"0.82rem", color:DIFFICULTY[c.difficulty].color, fontFamily:"'Cinzel',serif", flexShrink:0, opacity:0.8 }}>{c.difficulty==="EASY"?"🟢":c.difficulty==="NORMAL"?"🟡":"🔴"} {c.difficulty} · DC {DIFFICULTY[c.difficulty].dc}</span>
+                {!isFinalRoll && <span style={{ fontSize:"0.82rem", color:DIFFICULTY[c.difficulty].color, fontFamily:"'Cinzel',serif", flexShrink:0, opacity:0.8 }}>{c.difficulty==="EASY"?"🟢":c.difficulty==="NORMAL"?"🟡":"🔴"} {c.difficulty} · DC {DIFFICULTY[c.difficulty].dc}</span>}
               </button>
             ))}
           </div>

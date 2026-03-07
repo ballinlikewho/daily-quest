@@ -49,93 +49,123 @@ function getDailySetup(date) {
   return { questType: seededPick(QUEST_TYPES, seed, 0), tone: seededPick(TONES, seed, 7) };
 }
 
-const TREE_PROMPT = (seed, questType, tone, dayNumber) => `You are generating content for DAILY QUEST #${dayNumber}, a daily D20 adventure game. Seed: ${seed}.
-
+const TREE_PROMPT = (seed, questType, tone, dayNumber) => `You are writing DAILY QUEST #${dayNumber} — a D20 fantasy adventure game. Seed: ${seed}.
 QUEST TYPE: ${questType.label} — ${questType.desc}
 TONE: ${tone.label} — ${tone.personality}
 
-STEP 1 — Internally decide a unique scenario (do not output this as text, only include it in the JSON scenario field):
-- setting: a specific unexpected location in a fantasy world — not a generic dungeon or tavern. Think: a floating merchant barge, a royal taxidermist's workshop, a plague doctor's apothecary, a gladiatorial betting hall, a wizard's patent office, a thieves' guild auction house, a dwarven sewage aqueduct, a monastery that brews illegal ale, a halfling banking consortium, a circus that doubles as a spy network.
-- npc: quest-giver with a name, one defining trait, and a clear reason they need you. A real specific person — a disgraced herbalist, a one-armed cartographer, a corrupt toll collector who switched sides, a grieving blacksmith's widow.
-- macguffin: the thing being stolen/found/killed/rescued — specific and grounded in the fantasy world
-- complication: one unexpected twist that makes this harder than it looks
+━━━ HOW THIS GAME WORKS ━━━
+The entire quest — all 5 turns — is generated in a single pass before the player makes any choices. This has one critical implication you must internalize:
 
-This is a fantasy D&D one-shot. Everything must feel like it belongs in a fantasy world — characters, locations, problems, solutions. No modern technology, no real-world institutions. Avoid: sentient objects with internet humor, cheese, midnight deadlines, "becomes self-aware" plots, generic castles, standard dragons.
+CHOICES ARE APPROACHES TO A SCENE, NOT FORKS IN THE ROAD.
 
-STEP 2 — Build the entire quest around those decisions. Respond with ONLY raw JSON — the very first character must be {
+You commit to 5 fixed scenes (like acts in a play). Each scene has one central challenge. The player chooses HOW to engage that challenge (Easy/Normal/Risky). Their roll determines how well it goes. Then the story moves to the next scene regardless.
 
-Generate a complete quest as a single JSON object. The very first character must be {. No preamble, no markdown, no explanation — raw JSON only.
+• SUCCESS = player arrives at the next scene with an advantage
+• FAILURE = player arrives at the next scene hurt, exposed, or without resources — but they still arrive
 
-CONTINUITY IS THE MOST IMPORTANT THING. Before writing any narratives, plan the full story arc:
-- What is the location and situation at each turn?
-- What changes between turns — does the player move somewhere new, does the threat escalate, does a new character appear?
-- Each turn's outcomes must reference the CURRENT situation, not a generic adventure
-- Turn 3 outcomes should feel like they follow from turn 2's situation
-- The story should build toward a climax at turn 5
+This is the only way to write a pre-generated branching story with genuine continuity. The scene is the spine. The choices are the texture.
 
-Each turn has a "scene" — a brief internal note (not shown to player) describing where the player is and what's happening. Write all outcomes for that turn relative to that scene.
+━━━ STEP 1: BUILD YOUR SCENARIO ━━━
+Invent (include only in the "scenario" JSON field, not the opening):
+- setting: one specific, unexpected fantasy location. Not a tavern, dungeon, or castle. Think: a dwarven tax archive, a circus that doubles as a smuggling network, a floating menagerie, a plague doctor's apothecary, a halfling banking consortium, a wizard's patent office, a thieves' guild auction house, a royal taxidermist's workshop.
+- npc: one person with a name, one vivid physical or behavioral detail, and a specific urgent need. Not a type — a person. "Maret Dunn, a fence with ink-stained fingers and a debt she can't pay" not "a mysterious merchant."
+- macguffin: the specific thing — named, physical, grounded. Not "a powerful artifact." "The signed confession of Lord Aldric, sealed with black wax and hidden inside a taxidermied hawk."
+- complication: one twist that makes this harder than it looks. The thing that turns a simple job into a crisis.
 
-STRUCTURE: 5 turns. Each turn has 3 choices (A=EASY, B=NORMAL, C=RISKY). Each choice has 4 outcome narratives.
-Turns 1-4 also include next_choices (the 3 choices that will appear on the NEXT turn).
-Turn 5 has no next_choices — only endings.
+Fantasy world only. No modern technology or institutions. Avoid: sentient objects with internet humor, "becomes self-aware" plots, generic dragons, cheese jokes.
 
-NARRATIVE RULES:
-- Opening: 3-4 sentences. Establish the NPC, the situation, and — in the final sentence — make the goal explicit and urgent. What must the player do, and why does it matter right now. Write it like a DM dropping you into a scene, not a mission briefing.
-- Every outcome snippet: 4-5 sentences. Specific to the current scene. Reference what the player just tried. Show consequence.
-- EASY: safest/most cowardly option. Hide, retreat, wait, stall.
-- NORMAL: direct competent approach. Fight, negotiate, use the obvious tool.
-- RISKY: bold dangerous gamble. Big payoff if it works, ugly if it doesn't.
-- success: action worked, situation advances
-- failure: action failed or backfired, situation gets harder
-- crit_success: nat 20 — something epically lucky happens ON TOP of success, reference the specific action
-- crit_failure: nat 1 — spectacular humiliating failure specific to this action, they survive but worse off
-- Outcomes for the same choice should feel like branching versions of the same moment, not different stories
+━━━ STEP 2: PLAN YOUR 5-SCENE SPINE ━━━
+Before writing a single choice or outcome, commit to your story arc internally:
 
-TURN 5 CHOICES — CRITICAL RULE: Turn 5 choices must work regardless of whether the player succeeded or failed earlier turns. Never assume the player holds the MacGuffin or has completed any objective. Frame choices around the final confrontation itself — the obstacle, the antagonist, the location — not assumed possession. BAD: "Surrender the shard" (assumes you have it). GOOD: "Make one last desperate grab for the shard before the guards close in" (works whether you have it or not). Every turn 5 choice must make sense for both a player who dominated AND a player who failed every prior turn.
+Scene 1 — THE SETUP: Where does the player start? What is the immediate, visible problem?
+Scene 2 — THE PURSUIT: The player has followed the lead. Where are they now? What new obstacle or information appears?
+Scene 3 — THE COMPLICATION: The twist hits. Something unexpected changes the situation. A new threat, a betrayal, a revelation.
+Scene 4 — THE CONVERGENCE: The player is at or near the final location. The endgame is visible. Stakes are at their highest.
+Scene 5 — THE CLIMAX: The final confrontation. The moment of resolution.
 
-ENDINGS (turn 5 only) — written to feel like the closing beat of THIS specific quest, not generic:
-- nat20: legendary victory, fate intervened at the last second. Must contain VICTORY.
-- nat1: catastrophic defeat, the universe said no at the worst moment. Must contain DEFEAT.
-- dominated_victory: player dominated, they made it look easy. Must contain VICTORY.
-- solid_victory / solid_defeat: hard fought, could have gone either way. Include VICTORY or DEFEAT.
-- mixed_victory / mixed_defeat: coin flip, came down to the wire. Include VICTORY or DEFEAT.
-- struggled_victory / struggled_defeat: rough run, against the odds. Include VICTORY or DEFEAT.
-- disaster_victory / disaster_defeat: terrible run, miracle or inevitable end. Include VICTORY or DEFEAT.
+Each scene must flow naturally from the last. A player who failed every prior turn is still at this scene — beaten up, without resources, but present. A player who succeeded every turn is here too — with advantages, but facing the same final challenge.
 
-JSON:
+━━━ STEP 3: WRITE THE QUEST ━━━
+
+OPENING (3-4 sentences):
+Drop the player into the middle of the scene — in medias res. Name the NPC immediately with their vivid detail. Name the macguffin specifically. Establish the stakes and the deadline in plain terms. Plant 2-3 specific sensory or physical details (a smell, an object, a sound) that can echo through later turns. End on urgency — what must happen, and why now.
+
+CHOICES — THE MOST IMPORTANT RULE:
+Every choice must name a specific action in a specific place with a specific target. No hedging. No "whether X or Y or Z."
+
+BAD: "Push forward on your current path, whether through the cistern or interrogating staff or pursuing by boat"
+GOOD: "Slip into the drainage cistern beneath the counting house and follow the sound of running water"
+
+BAD: "Confront whoever holds the macguffin" (vague, assumes unknown location)
+GOOD: "Step into the lamplight and call Varen's name — let him come to you" (specific person, specific action)
+
+EASY choices: cautious, indirect, low-risk. Observe, delay, deflect, hide, wait. Safe but costs time or information.
+NORMAL choices: direct and competent. Fight, negotiate, use the obvious tool for the obvious job.
+RISKY choices: a bold gamble with real stakes. High reward if it works. Genuinely ugly if it doesn't.
+
+All 3 choices for a given turn must engage THE SAME SCENE AND THE SAME CHALLENGE — just differently. They are not three different stories. They are three ways to try the same thing.
+
+OUTCOMES — THE CONTINUITY RULE:
+Every outcome (success AND failure) must leave the player positioned for the next scene.
+
+Success outcomes: the action worked. Name what was gained. The player moves forward with a specific advantage.
+Failure outcomes: the action failed. Name what was lost. The player moves forward anyway — worse off, but moving. Failure is not a dead end. It is arriving at the next scene hurt.
+Crit success (nat 20): something epically lucky happens ON TOP of the success. Fate intervenes. Reference the specific action.
+Crit failure (nat 1): spectacular, humiliating failure. The player survives but in the worst possible position. Make it specific to the action, not generic.
+
+4-5 sentences per outcome. Reference the scene. Reference what the player tried. Show consequence. No vague gestures toward "the situation worsens."
+
+TURN 5 — SPECIAL RULES:
+Turn 5 choices are FINAL GAMBITS — not Easy/Normal/Risky. The player rolls against the dynamic Final DC regardless of which they pick, so difficulty labels are meaningless here. Write 3 equally-weighted, dramatically distinct ways to face the final moment. Each should feel like a real choice between different kinds of heroism or desperation — not a tiered risk ladder.
+
+Still include a difficulty field in the JSON (use EASY/NORMAL/RISKY as placeholders), but write the choices as if difficulty doesn't exist.
+
+Choices must work for a player who dominated every prior turn AND a player who failed every prior turn.
+Frame choices around the final situation — the antagonist, the object, the location — not assumed possession.
+
+BAD: "Surrender the confession to buy your freedom" (assumes you have it)
+GOOD: "Lunge for the confession as Aldric's hand closes around it — one chance, now or never" (works either way)
+
+ENDINGS (turn 5 only):
+Written as the closing beat of THIS specific quest. Reference the NPC, the macguffin, the setting. Not generic.
+• nat20: legendary, fate-touched victory. Something impossible happened. VICTORY.
+• nat1: catastrophic defeat. The universe said no at the worst moment. DEFEAT.
+• dominated_victory: effortless. They made it look easy. VICTORY.
+• solid_victory / solid_defeat: hard-fought. Could have gone either way. VICTORY or DEFEAT.
+• mixed_victory / mixed_defeat: wire-to-wire. Came down to the last roll. VICTORY or DEFEAT.
+• struggled_victory / struggled_defeat: rough run. Against the odds. VICTORY or DEFEAT.
+• disaster_victory / disaster_defeat: miracle or inevitable end. VICTORY or DEFEAT.
+
+━━━ OUTPUT ━━━
+Raw JSON only. First character must be {. No preamble, no markdown, no commentary.
+
 {
   "scenario": { "setting": "...", "npc": "...", "macguffin": "...", "complication": "..." },
   "title": "Quest Title",
-  "opening": "2-3 sentences. Scene-setting that naturally makes the objective clear.",
+  "opening": "3-4 sentences. In medias res. NPC named with detail. Macguffin named. Stakes and deadline explicit.",
   "turns": [
     {
       "turn": 1,
-      "scene": "internal note: where is the player, what is the immediate situation",
+      "scene": "One sentence: where is the player, what is the immediate challenge.",
       "choices": [
-        { "label": "A", "difficulty": "EASY",   "text": "choice text", "outcomes": { "success": "4-5 sentence narrative", "failure": "4-5 sentence narrative", "crit_success": "4-5 sentence narrative", "crit_failure": "4-5 sentence narrative" } },
-        { "label": "B", "difficulty": "NORMAL", "text": "choice text", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
-        { "label": "C", "difficulty": "RISKY",  "text": "choice text", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } }
-      ],
-      "next_choices": [
-        { "label": "A", "difficulty": "EASY",   "text": "choice for turn 2" },
-        { "label": "B", "difficulty": "NORMAL", "text": "choice for turn 2" },
-        { "label": "C", "difficulty": "RISKY",  "text": "choice for turn 2" }
+        { "label": "A", "difficulty": "EASY",   "text": "specific action verb + specific target", "outcomes": { "success": "4-5 sentences", "failure": "4-5 sentences", "crit_success": "4-5 sentences", "crit_failure": "4-5 sentences" } },
+        { "label": "B", "difficulty": "NORMAL", "text": "specific action", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
+        { "label": "C", "difficulty": "RISKY",  "text": "specific action", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } }
       ]
     },
-    { "turn": 2, "scene": "...", "choices": [...], "next_choices": [...] },
-    { "turn": 3, "scene": "...", "choices": [...], "next_choices": [...] },
-    { "turn": 4, "scene": "...", "choices": [...], "next_choices": [] },
+    { "turn": 2, "scene": "...", "choices": [...] },
+    { "turn": 3, "scene": "...", "choices": [...] },
+    { "turn": 4, "scene": "...", "choices": [...] },
     {
       "turn": 5,
       "scene": "...",
       "choices": [
-        { "label": "A", "difficulty": "EASY",   "text": "choice text", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
-        { "label": "B", "difficulty": "NORMAL", "text": "choice text", "outcomes": { ... } },
-        { "label": "C", "difficulty": "RISKY",  "text": "choice text", "outcomes": { ... } }
+        { "label": "A", "difficulty": "EASY",   "text": "...", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
+        { "label": "B", "difficulty": "NORMAL", "text": "...", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
+        { "label": "C", "difficulty": "RISKY",  "text": "...", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } }
       ],
       "endings": {
-        "nat20": "...",
-        "nat1": "...",
+        "nat20": "...", "nat1": "...",
         "dominated_victory": "...",
         "solid_victory": "...", "solid_defeat": "...",
         "mixed_victory": "...", "mixed_defeat": "...",
@@ -203,22 +233,30 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/tree") {
-      const date = url.searchParams.get("date") || getTodayDate();
-      const kvKey = `tree:${date}`;
+      try {
+        const date = url.searchParams.get("date") || getTodayDate();
+        const kvKey = `tree:${date}`;
 
-      let treeJson = await env.QUEST_KV.get(kvKey);
+        let treeJson = await env.QUEST_KV.get(kvKey);
 
-      // Not cached yet — generate on demand
-      if (!treeJson) {
-        console.log(`[fetch] Cache miss for ${date}, generating...`);
-        const tree = await generateTree(env.ANTHROPIC_API_KEY, date);
-        treeJson = JSON.stringify(tree);
-        await env.QUEST_KV.put(kvKey, treeJson, { expirationTtl: 60 * 60 * 48 });
+        // Not cached yet — generate on demand
+        if (!treeJson) {
+          console.log(`[fetch] Cache miss for ${date}, generating...`);
+          const tree = await generateTree(env.ANTHROPIC_API_KEY, date);
+          treeJson = JSON.stringify(tree);
+          await env.QUEST_KV.put(kvKey, treeJson, { expirationTtl: 60 * 60 * 48 });
+        }
+
+        return new Response(treeJson, {
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        console.error("[fetch] Error:", err.message);
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        });
       }
-
-      return new Response(treeJson, {
-        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      });
     }
 
     return new Response("Not found", { status: 404, headers: CORS_HEADERS });
