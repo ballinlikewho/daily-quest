@@ -14,7 +14,7 @@ function getDailySeed() {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 function getDayNumber() {
-  const start = new Date("2025-01-01");
+  const start = new Date("2026-03-06");
   return Math.floor((new Date() - start) / (1000*60*60*24)) + 1;
 }
 
