@@ -86,8 +86,6 @@ Scene 5 — THE CLIMAX: The final confrontation. The moment of resolution.
 
 Each scene must flow naturally from the last. A player who failed every prior turn is still at this scene — beaten up, without resources, but present. A player who succeeded every turn is here too — with advantages, but facing the same final challenge.
 
-The scenario's complication must remain active across turns 3, 4, and 5 — not just introduced and dropped. A rival is still pursuing. A deadline is still ticking. A betrayal is still unresolved. Whatever made this job harder than it looked must still be making it harder at the climax.
-
 ━━━ STEP 3: WRITE THE QUEST ━━━
 
 OPENING (3-4 sentences):
@@ -102,14 +100,11 @@ GOOD: "Slip into the drainage cistern beneath the counting house and follow the 
 BAD: "Confront whoever holds the macguffin" (vague, assumes unknown location)
 GOOD: "Step into the lamplight and call Varen's name — let him come to you" (specific person, specific action)
 
-EASY: the lowest-exposure approach to THIS specific scene. What risks the least? Sometimes that's hiding or waiting. Sometimes it's bribery, misdirection, sending someone else, using a disguise, or buying information. Whatever keeps you safest in this particular moment.
-NORMAL: the direct, competent approach. Use the obvious tool for the obvious job. Not flashy, not cowardly.
-RISKY: a bold gamble. Requires everything to go right. Ugly if it doesn't.
+EASY choices: cautious, indirect, low-risk. Observe, delay, deflect, hide, wait. Safe but costs time or information.
+NORMAL choices: direct and competent. Fight, negotiate, use the obvious tool for the obvious job.
+RISKY choices: a bold gamble with real stakes. High reward if it works. Genuinely ugly if it doesn't.
 
-All 3 choices must engage THE SAME SCENE AND THE SAME CHALLENGE through genuinely different methods — not just different levels of boldness applied to the same action.
-BAD: "Sneak past the guard slowly / Walk past confidently / Sprint past" — same action, different boldness.
-GOOD: "Slip a coin to the dock worker / Pick the lock on the harbor gate / Light a fire in the alley as a distraction" — three different methods.
-If your three choices feel like the same verb at different intensities, rewrite them.
+All 3 choices for a given turn must engage THE SAME SCENE AND THE SAME CHALLENGE — just differently. They are not three different stories. They are three ways to try the same thing.
 
 OUTCOMES — THE CONTINUITY RULE:
 Every outcome (success AND failure) must leave the player positioned for the next scene.
@@ -118,8 +113,6 @@ Success outcomes: the action worked. Name what was gained. The player moves forw
 Failure outcomes: the action failed. Name what was lost. The player moves forward anyway — worse off, but moving. Failure is not a dead end. It is arriving at the next scene hurt.
 Crit success (nat 20): something epically lucky happens ON TOP of the success. Fate intervenes. Reference the specific action.
 Crit failure (nat 1): spectacular, humiliating failure. The player survives but in the worst possible position. Make it specific to the action, not generic.
-
-MACGUFFIN RULE: Crit failure outcomes for turns 1-4 must never describe the macguffin as permanently destroyed or definitively gone. The player can lose their grip on it, be separated from it, watch it disappear into darkness — but it must remain theoretically pursuable. Write "it slides into the murk and you lose sight of it" not "it sinks beyond reach, lost forever." The quest continues regardless.
 
 4-5 sentences per outcome. Reference the scene. Reference what the player tried. Show consequence. No vague gestures toward "the situation worsens."
 
@@ -134,11 +127,8 @@ Frame choices around the final situation — the antagonist, the object, the loc
 BAD: "Surrender the confession to buy your freedom" (assumes you have it)
 GOOD: "Lunge for the confession as Aldric's hand closes around it — one chance, now or never" (works either way)
 
-CONFRONTATION RULE: All 3 turn 5 choices must place the player directly in the climactic moment — physically engaging the antagonist, the macguffin, or the final obstacle. No choice may involve leaving the scene, circling around, going to find a third party, or delaying the confrontation. The player is at the climax. Every choice is a different way to force the outcome NOW, at this location, in this moment. Administrative actions, retreats, and logistical moves are never valid turn 5 choices.
-
 ENDINGS (turn 5 only):
-Written as the closing beat of THIS specific quest. Reference the NPC and the setting. Not generic.
-ENDINGS MUST NOT describe specific possession or delivery of the macguffin. Prior turns may have described it being lost, dropped, or taken — the ending cannot contradict that. Instead describe the RESULT: the NPC's reaction, what the protagonist walked away with (coin, reputation, wounds, nothing), what the world looks like now. Victory and defeat are implied by tone — never write "the heart came to your hands" or "you seized the confession." Write what happened AFTER, not the mechanics of how it was obtained.
+Written as the closing beat of THIS specific quest. Reference the NPC, the macguffin, the setting. Not generic.
 • nat20: legendary, fate-touched victory. Something impossible happened. VICTORY.
 • nat1: catastrophic defeat. The universe said no at the worst moment. DEFEAT.
 • dominated_victory: effortless. They made it look easy. VICTORY.
