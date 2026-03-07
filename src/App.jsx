@@ -9,13 +9,19 @@ const DIFFICULTY = {
   RISKY:  { label: "Risky",  dc: 16, color: "#c84040" },
 };
 
+function getESTDate() {
+  // EST = UTC-5, fixed (no DST adjustment)
+  return new Date(Date.now() - 5 * 60 * 60 * 1000);
+}
 function getDailySeed() {
-  const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  const d = getESTDate();
+  return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
 }
 function getDayNumber() {
-  const start = new Date("2026-03-06");
-  return Math.floor((new Date() - start) / (1000*60*60*24)) + 1;
+  const d = getESTDate();
+  const today = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  const start = Date.UTC(2026, 2, 6); // March 6, 2026
+  return Math.floor((today - start) / (1000*60*60*24)) + 1;
 }
 
 const QUEST_TYPES = [
