@@ -158,7 +158,7 @@ Written as the closing beat of THIS specific quest. Reference the NPC, the macgu
 Raw JSON only. First character must be {. No preamble, no markdown, no commentary.
 
 {
-  "scenario": { "setting": "${scenario.setting}", "npc": "${scenario.npc}", "macguffin": "${scenario.macguffin}", "complication": "${scenario.complication}" },
+  "scenario": { "setting": "...", "npc": "...", "macguffin": "...", "complication": "..." },
   "title": "Quest Title",
   "opening": "3-4 sentences. In medias res. NPC named with detail. Macguffin named. Stakes and deadline explicit.",
   "turns": [
