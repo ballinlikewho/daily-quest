@@ -267,7 +267,16 @@ export default {
 
     if (url.pathname === "/tree") {
       try {
-        const date = url.searchParams.get("date") || getTodayDate();
+        const today = getTodayDate();
+        const date = url.searchParams.get("date") || today;
+
+        if (date !== today) {
+          return new Response(JSON.stringify({ error: "Invalid date" }), {
+            status: 400,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          });
+        }
+
         const kvKey = `tree:${date}`;
 
         let treeJson = await env.QUEST_KV.get(kvKey);
