@@ -451,10 +451,11 @@ export default function DailyQuest() {
     const rollTrail = turnHistory.map(t => {
       if (t.rawRoll===20) return "⭐";
       if (t.result.label==="CRITICAL FAILURE") return "💀";
-      if (t.result.label==="SUCCESS") return t.difficulty==="RISKY"?"🟥":t.difficulty==="NORMAL"?"🟨":"🟩";
-      return "⬛";
+      if (t.result.label==="CRITICAL SUCCESS") return "⭐";
+      if (t.result.label==="SUCCESS") return "🟩";
+      return "🟥";
     }).join("");
-    navigator.clipboard.writeText(`⚔️ Daily Quest #${dayNum}\n${tree?.title||questType.label} · ${tone.label}\n\n${rollTrail}\n\n${outcome==="victory"?"⚔️":"💀"} ${outcome?.toUpperCase()} · ${tier} — ${title}\nScore: ${score}/${MAX_POSSIBLE_SCORE}`);
+    navigator.clipboard.writeText(`⚔️ Daily Quest #${dayNum}\n${tree?.title||questType.label} · ${tone.label}\n\n${rollTrail}\n\n${outcome==="victory"?"⚔️":"💀"} ${outcome?.toUpperCase()} · ${tier} — ${title}`);
     setCopied(true); setTimeout(()=>setCopied(false),2000);
   }
 
@@ -704,7 +705,6 @@ export default function DailyQuest() {
               <div style={{ fontFamily:"'Cinzel',serif", fontSize:"2rem", color:tierData.color, letterSpacing:"0.1em", lineHeight:1 }}>{tierData.tier}</div>
               <div style={{ fontFamily:"'Cinzel',serif", fontSize:"0.9rem", color:tierData.color, letterSpacing:"0.12em", margin:"0.3rem 0 0.2rem" }}>{tierData.title}</div>
               <div style={{ fontFamily:"'IM Fell English',serif", fontStyle:"italic", color:"#7a5e2e", fontSize:"0.82rem", marginBottom:"0.5rem" }}>{tierData.desc}</div>
-              <div style={{ color:"#5a4020", fontSize:"0.85rem", fontFamily:"'Cinzel',serif", letterSpacing:"0.1em" }}>Score: <span style={{ color:tierData.color }}>{score}</span> / {MAX_POSSIBLE_SCORE}</div>
             </div>
             <div style={{ color:"#5a4020", fontSize:"0.85rem", letterSpacing:"0.1em", textTransform:"uppercase", fontFamily:"'Cinzel',serif", marginBottom:"0.75rem" }}>Quest Complete · Return tomorrow</div>
             <button onClick={copyResult} style={{ padding:"0.85rem 1.8rem", minHeight:48, background:"transparent", border:"1px solid #5a3a10", borderRadius:2, color:copied?"#6aaa60":"#c8a86b", cursor:"pointer", fontSize:"0.88rem", letterSpacing:"0.15em", fontFamily:"'Cinzel',serif", textTransform:"uppercase" }}>
