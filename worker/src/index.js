@@ -50,23 +50,7 @@ function getDailySetup(date) {
   return { questType: seededPick(QUEST_TYPES, seed, 0), tone: seededPick(TONES, seed, 7) };
 }
 
-const SCENARIO_PROMPT = (seed, questType, tone) => `You are generating a scenario seed for a D20 fantasy adventure. Seed: ${seed}.
-QUEST TYPE: ${questType.label} — ${questType.desc}
-TONE: ${tone.label} — ${tone.personality}
-
-Invent a scenario with exactly these four fields:
-- setting: one specific, unexpected fantasy location. Not a tavern, dungeon, or castle. Think: a dwarven tax archive, a circus that doubles as a smuggling network, a floating menagerie, a plague doctor's apothecary, a halfling banking consortium, a wizard's patent office, a thieves' guild auction house, a royal taxidermist's workshop.
-- npc: one person with a name, one vivid physical or behavioral detail, and a specific urgent need. Not a type — a person. "Maret Dunn, a fence with ink-stained fingers and a debt she can't pay" not "a mysterious merchant."
-- macguffin: the specific thing — named, physical, grounded. Not "a powerful artifact." "The signed confession of Lord Aldric, sealed with black wax and hidden inside a taxidermied hawk."
-- complication: one twist that makes this harder than it looks. The thing that turns a simple job into a crisis.
-
-Fantasy world only. No modern technology or institutions. Avoid: sentient objects with internet humor, "becomes self-aware" plots, generic dragons, cheese jokes.
-
-Raw JSON only. First character must be {. No preamble, no markdown, no commentary.
-
-{ "setting": "...", "npc": "...", "macguffin": "...", "complication": "..." }`;
-
-const TREE_PROMPT = (seed, questType, tone, dayNumber, scenario) => `You are writing DAILY QUEST #${dayNumber} — a D20 fantasy adventure game. Seed: ${seed}.
+const TREE_PROMPT = (seed, questType, tone, dayNumber) => `You are writing DAILY QUEST #${dayNumber} — a D20 fantasy adventure game. Seed: ${seed}.
 QUEST TYPE: ${questType.label} — ${questType.desc}
 TONE: ${tone.label} — ${tone.personality}
 
@@ -82,15 +66,17 @@ You commit to 5 fixed scenes (like acts in a play). Each scene has one central c
 
 This is the only way to write a pre-generated branching story with genuine continuity. The scene is the spine. The choices are the texture.
 
-━━━ STEP 1: YOUR SCENARIO (LOCKED IN — DO NOT DEVIATE) ━━━
-The following scenario has already been generated. Use it exactly. Do not reinvent or alter any element.
+━━━ STEP 1: INVENT YOUR SCENARIO ━━━
+Before writing anything else, invent the four core elements of this quest. Be specific and unexpected.
 
-Setting: ${scenario.setting}
-NPC: ${scenario.npc}
-Macguffin: ${scenario.macguffin}
-Complication: ${scenario.complication}
+- setting: one specific, unexpected fantasy location. Not a tavern, dungeon, or castle. Think: a dwarven tax archive, a circus that doubles as a smuggling network, a floating menagerie, a plague doctor's apothecary, a halfling banking consortium, a wizard's patent office, a thieves' guild auction house, a royal taxidermist's workshop.
+- npc: one person with a name, one vivid physical or behavioral detail, and a specific urgent need. Not a type — a person. "Maret Dunn, a fence with ink-stained fingers and a debt she can't pay" not "a mysterious merchant."
+- macguffin: the specific thing — named, physical, grounded. Not "a powerful artifact." "The signed confession of Lord Aldric, sealed with black wax and hidden inside a taxidermied hawk."
+- complication: one twist that makes this harder than it looks. The thing that turns a simple job into a crisis.
 
-These are facts. Build everything around them.
+Fantasy world only. No modern technology or institutions. Avoid: sentient objects with internet humor, "becomes self-aware" plots, generic dragons, cheese jokes.
+
+Commit to these four elements. Everything that follows must build from them without deviation.
 
 ━━━ STEP 2: PLAN YOUR 5-SCENE SPINE ━━━
 Before writing a single choice or outcome, commit to your story arc internally:
@@ -220,22 +206,12 @@ async function callAnthropic(apiKey, prompt, maxTokens) {
   return JSON.parse(clean);
 }
 
-async function generateScenario(apiKey, date) {
-  const { questType, tone } = getDailySetup(date);
-  const seed = getDailySeed(date);
-  console.log(`[scenario] Generating scenario for ${date}`);
-  const scenario = await callAnthropic(apiKey, SCENARIO_PROMPT(seed, questType, tone), 400);
-  console.log(`[scenario] Got: ${JSON.stringify(scenario)}`);
-  return scenario;
-}
-
 async function generateTree(apiKey, date) {
   const { questType, tone } = getDailySetup(date);
   const seed = getDailySeed(date);
   const dayNumber = getDayNumber(date);
-
-  const scenario = await generateScenario(apiKey, date);
-  return callAnthropic(apiKey, TREE_PROMPT(seed, questType, tone, dayNumber, scenario), 16000);
+  console.log(`[generate] Generating tree for ${date}`);
+  return callAnthropic(apiKey, TREE_PROMPT(seed, questType, tone, dayNumber), 16000);
 }
 
 const CORS_HEADERS = {
@@ -247,15 +223,16 @@ const CORS_HEADERS = {
 export default {
   // Cron: runs at 11:50 PM EST (04:50 UTC) — pre-generates tomorrow's quest
   async scheduled(event, env, ctx) {
-    const d = new Date(Date.now() - 5 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000); // tomorrow EST
+    const d = new Date(Date.now() - 5 * 60 * 60 * 1000); // current EST time
+    d.setUTCDate(d.getUTCDate() + 1);                     // advance to tomorrow EST
     const date = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
     console.log(`[cron] Generating tree for ${date}`);
     const tree = await generateTree(env.ANTHROPIC_API_KEY, date);
     await env.QUEST_KV.put(`tree:${date}`, JSON.stringify(tree), {
-      expirationTtl: 60 * 60 * 48, // 48 hours
+      expirationTtl: 60 * 60 * 48,
     });
     console.log(`[cron] Tree stored for ${date}`);
-  },
+  },  
 
   async fetch(request, env) {
     // Handle CORS preflight

@@ -8,3 +8,13 @@ crons = ["50 4 * * *"]  # 11:50 PM EST (UTC-5)
 [[kv_namespaces]]
 binding = "QUEST_KV"
 id = "2d626e569b2848c3a12b1d03b825de0d"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
