@@ -333,12 +333,13 @@ export default function DailyQuest() {
 
   const { questType, tone } = getDailySetup();
   const bottomRef = useRef(null);
+  const lastNarrativeRef = useRef(null);
   const seed = getDailySeed();
   const dayNum = getDayNumber();
 
   useEffect(() => {
     if (narrative.length <= 1) window.scrollTo({ top:0, behavior:"smooth" });
-    else bottomRef.current?.scrollIntoView({ behavior:"smooth" });
+    else lastNarrativeRef.current?.scrollIntoView({ behavior:"smooth", block:"start" });
   }, [narrative, rolling]);
 
   async function beginQuest() {
@@ -639,7 +640,7 @@ export default function DailyQuest() {
             );
           }
           return (
-            <div key={i} style={{ marginBottom:"1.5rem", animation:i===narrative.length-1?"fadeIn 0.4s ease":"none" }}>
+            <div key={i} ref={i===narrative.length-1?lastNarrativeRef:null} style={{ marginBottom:"1.5rem", animation:i===narrative.length-1?"fadeIn 0.4s ease":"none" }}>
               <div style={{ background:"linear-gradient(160deg,rgba(30,20,8,0.9),rgba(20,14,4,0.95))", border:"1px solid #3a2810", borderRadius:2, padding:"1.2rem 1.4rem", fontSize:"0.96rem", lineHeight:1.85, color:"#d4b882", fontFamily:"'IM Fell English',serif", whiteSpace:"pre-wrap", boxShadow:"inset 0 0 20px rgba(0,0,0,0.3)" }}>
                 {n.text}
                 {n.isOutcome && <div style={{ marginTop:"1.2rem", paddingTop:"1rem", borderTop:"1px solid #2e1e08" }}><OutcomeBadge text={n.text} /></div>}
