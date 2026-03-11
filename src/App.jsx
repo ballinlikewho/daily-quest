@@ -336,8 +336,10 @@ export default function DailyQuest() {
   const seed = getDailySeed();
   const dayNum = getDayNumber();
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [narrative, rolling]);
-  useEffect(() => { if (phase === "choosing" && narrative.length <= 1) window.scrollTo({ top:0, behavior:"smooth" }); }, [phase]);
+  useEffect(() => {
+    if (narrative.length <= 1) window.scrollTo({ top:0, behavior:"smooth" });
+    else bottomRef.current?.scrollIntoView({ behavior:"smooth" });
+  }, [narrative, rolling]);
 
   async function beginQuest() {
     setPhase("generating");
