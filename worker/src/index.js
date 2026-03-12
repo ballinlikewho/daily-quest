@@ -83,7 +83,7 @@ Before writing a single choice or outcome, commit to your story arc internally:
 
 Scene 1 — THE SETUP: Where does the player start? What is the immediate, visible problem?
 Scene 2 — THE PURSUIT: The player has followed the lead. Where are they now? What new obstacle or information appears?
-Scene 3 — THE COMPLICATION: The twist hits. Something unexpected changes the situation. A new threat, a betrayal, a revelation.
+Scene 3 — THE COMPLICATION: The twist hits. Something unexpected changes the situation. A new threat, a betrayal, a revelation. CRITICAL: At this point the player may or may not possess the macguffin — some players arrive here having never found it. Write all three choices assuming the player does NOT yet have it. The macguffin should be something to reach for, fight over, or bargain with — never something already in hand.
 Scene 4 — THE CONVERGENCE: The player is at or near the final location. The endgame is visible. Stakes are at their highest.
 Scene 5 — THE CLIMAX: The final confrontation. The moment of resolution.
 
