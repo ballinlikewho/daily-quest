@@ -10,8 +10,8 @@ const DIFFICULTY = {
 };
 
 function getESTDate() {
-  // EST = UTC-5, fixed (no DST adjustment)
-  return new Date(Date.now() - 5 * 60 * 60 * 1000);
+  // EDT = UTC-4
+  return new Date(Date.now() - 4 * 60 * 60 * 1000);
 }
 function getDailySeed() {
   const d = getESTDate();
