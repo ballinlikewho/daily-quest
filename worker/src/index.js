@@ -34,8 +34,8 @@ function getDayNumber(date) {
 }
 
 function getTodayDate() {
-  // EST = UTC-5
-  const d = new Date(Date.now() - 5 * 60 * 60 * 1000);
+  // EDT = UTC-4
+  const d = new Date(Date.now() - 4 * 60 * 60 * 1000);
   return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
 }
 
@@ -227,9 +227,9 @@ const CORS_HEADERS = {
 };
 
 export default {
-  // Cron: runs at 12:50 AM EST (05:50 UTC) — generates today's quest
+  // Cron: runs at 1:05 AM EDT (05:05 UTC) — generates today's quest
   async scheduled(event, env, ctx) {
-    const d = new Date(Date.now() - 5 * 60 * 60 * 1000); // current EST time
+    const d = new Date(Date.now() - 4 * 60 * 60 * 1000); // current EDT time
     const date = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
     console.log(`[cron] Generating tree for ${date}`);
     const tree = await generateTree(env.ANTHROPIC_API_KEY, date);
