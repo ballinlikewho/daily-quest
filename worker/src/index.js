@@ -197,6 +197,7 @@ async function callAnthropic(apiKey, prompt, maxTokens) {
     body: JSON.stringify({
       model: MODEL,
       max_tokens: maxTokens,
+      stream: true,
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -206,8 +207,31 @@ async function callAnthropic(apiKey, prompt, maxTokens) {
     throw new Error(e?.error?.message || `Anthropic API error ${res.status}`);
   }
 
-  const data = await res.json();
-  const text = data.content.map(b => b.text || "").join("").trim();
+  // Read SSE stream to avoid Cloudflare 524 timeout on long Sonnet responses
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop();
+    for (const line of lines) {
+      if (!line.startsWith("data: ")) continue;
+      const data = line.slice(6).trim();
+      if (data === "[DONE]") continue;
+      try {
+        const event = JSON.parse(data);
+        if (event.type === "content_block_delta" && event.delta?.text) {
+          text += event.delta.text;
+        }
+      } catch {}
+    }
+  }
+
   const clean = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
   return JSON.parse(clean);
 }
@@ -217,7 +241,7 @@ async function generateTree(apiKey, date) {
   const seed = getDailySeed(date);
   const dayNumber = getDayNumber(date);
   console.log(`[generate] Generating tree for ${date}`);
-  return callAnthropic(apiKey, TREE_PROMPT(seed, questType, tone, dayNumber), 16000);
+  return callAnthropic(apiKey, TREE_PROMPT(seed, questType, tone, dayNumber), 64000);
 }
 
 const CORS_HEADERS = {
