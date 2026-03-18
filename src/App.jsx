@@ -594,12 +594,14 @@ export default function DailyQuest() {
             {isFinalRoll && <div style={{ fontFamily:"'Cinzel',serif", fontSize:"0.82rem", color:"#c8a86b", letterSpacing:"0.15em", textTransform:"uppercase", textAlign:"center", marginBottom:"0.25rem", opacity:0.7 }}>⚔ Choose your final gambit</div>}
             {currentChoices.map(c => (
               <button key={c.label} onClick={()=>selectAction(c)}
-                style={{ padding:"0.75rem 1rem", minHeight:52, background:"transparent", border:`1px solid ${isFinalRoll?"#6a4a20":"#3a2810"}`, borderRadius:2, color:"#9a7840", fontSize:"0.9rem", textAlign:"left", cursor:"pointer", fontFamily:"'IM Fell English',serif", display:"flex", gap:"0.75rem", alignItems:"center", transition:"all 0.15s" }}
+                style={{ padding:"0.5rem 0.75rem", background:"transparent", border:`1px solid ${isFinalRoll?"#6a4a20":"#3a2810"}`, borderRadius:2, color:"#9a7840", fontSize:"0.9rem", textAlign:"left", cursor:"pointer", fontFamily:"'IM Fell English',serif", display:"flex", gap:"0.6rem", alignItems:"flex-start", transition:"all 0.15s" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor=isFinalRoll?"#c8a86b88":DIFFICULTY[c.difficulty].color+"88";e.currentTarget.style.background=isFinalRoll?"rgba(200,168,107,0.08)":`${DIFFICULTY[c.difficulty].color}11`;}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor=isFinalRoll?"#6a4a20":"#3a2810";e.currentTarget.style.background="transparent";}}>
-                <span style={{ fontFamily:"'Cinzel',serif", fontSize:"0.8rem", color:"#c8a86b", border:"1px solid #5a3a10", borderRadius:2, padding:"0.15rem 0.4rem", flexShrink:0, letterSpacing:"0.1em" }}>{c.label}</span>
-                <span style={{ flex:1 }}>{c.text}</span>
-                {!isFinalRoll && <span style={{ fontSize:"0.82rem", color:DIFFICULTY[c.difficulty].color, fontFamily:"'Cinzel',serif", flexShrink:0, opacity:0.8 }}>{c.difficulty==="EASY"?"🟢":c.difficulty==="NORMAL"?"🟡":"🔴"} {c.difficulty} · DC {DIFFICULTY[c.difficulty].dc}</span>}
+                <span style={{ fontFamily:"'Cinzel',serif", fontSize:"0.8rem", color:"#c8a86b", border:"1px solid #5a3a10", borderRadius:2, padding:"0.15rem 0.4rem", flexShrink:0, letterSpacing:"0.1em", marginTop:"0.1rem" }}>{c.label}</span>
+                <span style={{ flex:1, display:"flex", flexDirection:"column", gap:"0.25rem" }}>
+                  <span>{c.text}</span>
+                  {!isFinalRoll && <span style={{ fontSize:"0.75rem", color:DIFFICULTY[c.difficulty].color, fontFamily:"'Cinzel',serif", opacity:0.8 }}>{c.difficulty==="EASY"?"🟢":c.difficulty==="NORMAL"?"🟡":"🔴"} {c.difficulty} · DC {DIFFICULTY[c.difficulty].dc}</span>}
+                </span>
               </button>
             ))}
           </div>
