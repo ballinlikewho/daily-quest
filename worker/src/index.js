@@ -1,5 +1,5 @@
 const ANTHROPIC_API = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-sonnet-4-6";
 
 const QUEST_TYPES = [
   { id:"heist",   label:"Heist",          icon:"🗝", desc:"Steal something that isn't yours" },
@@ -34,8 +34,8 @@ function getDayNumber(date) {
 }
 
 function getTodayDate() {
-  // EDT = UTC-4
-  const d = new Date(Date.now() - 4 * 60 * 60 * 1000);
+  // EST = UTC-5
+  const d = new Date(Date.now() - 5 * 60 * 60 * 1000);
   return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
 }
 
@@ -227,10 +227,9 @@ const CORS_HEADERS = {
 };
 
 export default {
-  // Cron: runs at 11:50 PM EDT (03:50 UTC) — pre-generates tomorrow's quest
+  // Cron: runs at 12:50 AM EST (05:50 UTC) — generates today's quest
   async scheduled(event, env, ctx) {
-    const d = new Date(Date.now() - 4 * 60 * 60 * 1000); // current EDT time
-    d.setUTCDate(d.getUTCDate() + 1);                     // advance to tomorrow EST
+    const d = new Date(Date.now() - 5 * 60 * 60 * 1000); // current EST time
     const date = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
     console.log(`[cron] Generating tree for ${date}`);
     const tree = await generateTree(env.ANTHROPIC_API_KEY, date);

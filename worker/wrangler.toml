@@ -3,7 +3,7 @@ main = "src/index.js"
 compatibility_date = "2025-01-01"
 
 [triggers]
-crons = ["50 3 * * *"]  # 11:50 PM EDT (UTC-4)
+crons = ["50 5 * * *"]  # 12:50 AM EST (UTC-5)
 
 [[kv_namespaces]]
 binding = "QUEST_KV"
