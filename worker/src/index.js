@@ -104,6 +104,8 @@ This is not another obstacle. This is the moment of absolute commitment where ev
 OPENING (3-4 sentences):
 Drop the player into the middle of the scene — in medias res. Name the NPC immediately with their vivid detail. Name the macguffin specifically. The macguffin must be introduced as something to be obtained, not something the player already has. Name any other significant characters who will appear later — no character should emerge unnamed mid-quest. Establish the stakes and the deadline in plain terms. Plant 2-3 specific sensory or physical details that will echo through later turns. End on urgency — what must happen, and why now. The tone must be fully present from the first word.
 
+SENTENCE RULES FOR THE OPENING: No sentence over 25 words. No nested em-dashes. Each sentence does one job. Cut, don't compound.
+
 CHOICES — THE MOST IMPORTANT RULE:
 Every choice must name a specific action in a specific place with a specific target. No hedging. No "whether X or Y or Z."
 
