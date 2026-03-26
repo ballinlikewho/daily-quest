@@ -102,7 +102,7 @@ This is not another obstacle. This is the moment of absolute commitment where ev
 ━━━ STEP 3: WRITE THE QUEST ━━━
 
 OPENING (3-4 sentences):
-Drop the player into the middle of the scene — in medias res. Name the NPC immediately with their vivid detail. Name the macguffin specifically. The macguffin must be introduced as something to be obtained, not something the player already has. Name any other significant characters who will appear later — no character should emerge unnamed mid-quest. Establish the stakes and the deadline in plain terms. Plant 2-3 specific sensory or physical details that will echo through later turns. End on urgency — what must happen, and why now. The tone must be fully present from the first word.
+Drop the player into the middle of the scene — in medias res. Name the NPC immediately with their vivid detail. Name the macguffin specifically. The macguffin must be introduced as something to be obtained, not something the player already has. Name every significant character who will appear later — including the complication character from your scenario. No character should emerge unnamed mid-quest. If Brother X or Scribe Y appears in Turn 2, their name must be in the opening. Establish the stakes and the deadline in plain terms. Plant 2-3 specific sensory or physical details that will echo through later turns. End on urgency — what must happen, and why now. The tone must be fully present from the first word.
 
 SENTENCE RULES FOR THE OPENING: No sentence over 25 words. No nested em-dashes. Each sentence does one job. Cut, don't compound.
 
