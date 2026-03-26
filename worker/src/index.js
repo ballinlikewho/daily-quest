@@ -127,7 +127,7 @@ Failure outcomes: the action failed. Name what was lost. The player moves forwar
 Crit success (nat 20): something epically lucky happens ON TOP of the success. Fate intervenes. Reference the specific action. Echo a sensory detail from Turn 1 if possible.
 Crit failure (nat 1): spectacular, humiliating failure. The player survives but in the worst possible position. Make it specific to the action, not generic.
 
-4-5 sentences per outcome. Reference the scene. Reference what the player tried. Show consequence. No vague gestures toward "the situation worsens."
+2-3 sentences per outcome. Reference what the player tried. Show consequence. No vague gestures toward "the situation worsens."
 
 TURN 5 — SPECIAL RULES:
 Turn 5 choices are FINAL GAMBITS. The player rolls against the dynamic Final DC regardless of which they pick — difficulty labels are meaningless here. Write 3 equally-weighted, dramatically distinct ways to face the final moment. Each should feel like a real choice between different kinds of heroism or desperation — not a tiered risk ladder.
@@ -137,7 +137,7 @@ Still include a difficulty field in the JSON (use EASY/NORMAL/RISKY as placehold
 The Turn 5 scene description must name the NPC, the macguffin, and the setting detail from Turn 1. Everything converges here.
 
 ENDINGS (turn 5 only):
-Written as the closing beat of THIS specific quest. Reference the NPC, the macguffin, the setting. Not generic. The tone must be fully present.
+3-4 sentences each. The closing beat of THIS specific quest. Reference the NPC, the macguffin, the setting. Not generic. The tone must be fully present.
 - nat20: legendary, fate-touched victory. Something impossible happened. VICTORY.
 - nat1: catastrophic defeat. The universe said no at the worst moment. DEFEAT.
 - dominated_victory: effortless. They made it look easy. VICTORY.
@@ -158,7 +158,7 @@ Raw JSON only. First character must be {. No preamble, no markdown, no commentar
       "turn": 1,
       "scene": "ONE sentence only. Where is the player. What is the immediate challenge. Nothing more.",
       "choices": [
-        { "label": "A", "difficulty": "EASY",   "text": "specific action verb + specific target", "outcomes": { "success": "4-5 sentences", "failure": "4-5 sentences", "crit_success": "4-5 sentences", "crit_failure": "4-5 sentences" } },
+        { "label": "A", "difficulty": "EASY",   "text": "specific action verb + specific target", "outcomes": { "success": "2-3 sentences", "failure": "2-3 sentences", "crit_success": "2-3 sentences", "crit_failure": "2-3 sentences" } },
         { "label": "B", "difficulty": "NORMAL", "text": "specific action", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } },
         { "label": "C", "difficulty": "RISKY",  "text": "specific action", "outcomes": { "success": "...", "failure": "...", "crit_success": "...", "crit_failure": "..." } }
       ]
